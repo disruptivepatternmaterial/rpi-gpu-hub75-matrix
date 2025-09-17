@@ -42,12 +42,8 @@ void die(const char *format, ...) {
  * @return void 
  */
 void debug(const char *format, ...) {
-    if (CONSOLE_DEBUG) {
-        va_list args;
-        va_start(args, format);
-        vfprintf(stderr, format, args);
-        va_end(args);
-    }
+    // Debug output disabled
+    (void)format; // Suppress unused parameter warning
 }
 
 
@@ -368,7 +364,7 @@ void configure_gpio_4(uint32_t *PERIBase, int version) {
 	// set pin to output mode
 	//PERIBase[sel_reg] &= ~(0b111 << sel_shift);
 	//PERIBase[sel_reg] |= (0b111 << sel_shift);
-	printf("%d output mode enabled\n", pin_num);
+	// Debug output disabled
 
 	/*
 	PERIBase[138] &= ~(1 << (pin_num % 32));
@@ -422,17 +418,13 @@ void configure_gpio(uint32_t *PERIBase, int version) {
         uint32_t *GPIOBase = PERIBase + gpio_off;
         uint32_t *RIOBase = PERIBase + rio_off;
 
-        if (CONSOLE_DEBUG) {
-            printf("configure pin %d\n", pin_num);
-        }
+        // GPIO debug output removed
         GPIO[pin_num].ctrl = 5;
         pad[pin_num] = 0x15;
 
         rioSET->OE = 0x01<<pin_num;     // these 2 lines actually set the pin to output mode
         rioSET->Out = 0x01<<pin_num;
-        if (CONSOLE_DEBUG) {
-            printf("configured pin %d, ctrl [%d], pad [%x]\n", pin_num, GPIO[pin_num].ctrl, pad[pin_num]);
-        }
+        // GPIO debug output removed
     }
 }
 

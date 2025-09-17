@@ -145,14 +145,12 @@ void check_scene(const scene_info *scene) {
 uint8_t *u_mapper_impl(uint8_t *image_in, uint8_t *image_out, const struct scene_info *scene) {
     static uint8_t *output_image = NULL;
     if (output_image == NULL) {
-        debug("Allocating memory for u_mapper\n"); 
         output_image = (uint8_t*)aligned_alloc(64, scene->width * scene->height * scene->stride);
         if (output_image == NULL) {
             die("Failed to allocate memory for u_mapper image\n");
         }
     }
     if (image_out == NULL) {
-        debug("output image is NULL, using allocated memory\n");
         image_out = output_image;
     }
 
@@ -161,11 +159,9 @@ uint8_t *u_mapper_impl(uint8_t *image_in, uint8_t *image_out, const struct scene
     const uint8_t *bottom_half = image_in + (scene->width * (scene->height / 2) * scene->stride);  // Last 64 rows
     const uint32_t row_length = scene->width * scene->stride;
 
-    debug("width: %d, stride: %d, row_length: %d", scene->width, scene->stride, row_length);
     // Remap bottom half to the first part of the output
     for (int y = 0; y < (scene->height / 2); y++) {
         // Copy each row from bottom half
-        debug ("  Y: %d, offset: %d", y, y * scene->width * scene->stride);
         memcpy(output_image + (y * scene->width * scene->stride), bottom_half + (y * scene->width * scene->stride), row_length);
     }
 
@@ -399,15 +395,15 @@ void render_forever(const scene_info *scene) {
         die("Could not open file /proc/cpuinfo\n");
     }
     while (getline(&line, &line_sz, file)) {
-        if (strstr(line, "Pi 5") == NULL) {
+        if (strstr(line, "Pi 5") != NULL) {
             cpu_model = 5;
             break;
         }
-        if (strstr(line, "Pi 4") == NULL) {
+        if (strstr(line, "Pi 4") != NULL) {
             cpu_model = 4;
             break;
         }
-        if (strstr(line, "Pi 3") == NULL) {
+        if (strstr(line, "Pi 3") != NULL) {
             cpu_model = 3;
             break;
         }

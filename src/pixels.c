@@ -324,7 +324,7 @@ inline void saturation2_tone_mapperF(const RGBF *__restrict__ in, RGBF *__restri
     HSLF *out = (HSLF*)out2;
     // Convert RGB to HSL
     rgb_to_hsl(in, out);
-    printf("out: h:%f s:%f l:%f\n", out->h, out->s, out->l);
+    // Debug output disabled
 
     // Apply tone mapping to the lightness channel (use a simple Reinhard operator)
     out->l = out->l / (1.0f + out->l);
@@ -1278,24 +1278,10 @@ void *tone_map_rgb_bits(const scene_info *scene, const int num_bits, float *quan
             bits32[i+512] = byte_to_bcm32(MIN(tone_pixel.b * brightness, 255), scene->bit_depth, i);
         }
 
-        if (CONSOLE_DEBUG) {
-            debug("i: %d   / %f, quant_err: %f, Gamma Value: %f,  Tone Map Value: %f, Tone Mapped pwm: ", i, (double)normalize8(i), (double)quant_errors[i], (double)gamma_pixel.r, (double)tone_pixel.r);
-            //debug("quant err: [%f], [%f], [[%f]]\n", quant_errors[i], quant_errors[i+256], quant_errors[i+512]);
-            if (num_bits <= 32) {
-                uint32_t *num = (uint32_t *)bits;
-                binary32(stderr, num[i]);
-            } else {
-                uint64_t *num = (uint64_t *)bits;
-                binary64(stderr, num[i]);
-            }
-            debug("\n");
-        }
+        // Debug output completely removed
     }
 
     if (num_bits <= 32) {
-        if (CONSOLE_DEBUG) {
-            printf("return bits32\n");
-        }
         return bits32;
     }
     return bits64;
@@ -1339,7 +1325,6 @@ void map_byte_image_to_bcm(scene_info *scene, uint8_t *image) {
             bits = (uint32_t*)tone_map_rgb_bits(scene, scene->bit_depth, quant_errors);
         }
         last_tone_map = scene->tone_mapper;
-        debug("new tone mapped bits created\n");
     }
 
     // select our image source

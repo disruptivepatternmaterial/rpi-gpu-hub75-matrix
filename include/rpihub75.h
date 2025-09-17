@@ -85,7 +85,7 @@
 //////////////////////////////////////////////////////////
 
 #ifndef CONSOLE_DEBUG
-    #define CONSOLE_DEBUG 1
+    #define CONSOLE_DEBUG 0
 #endif
 #ifndef ENABLE_ASSERTS
     #define ENABLE_ASSERTS 0 
